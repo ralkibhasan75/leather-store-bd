@@ -1,32 +1,60 @@
 // src/app/products/page.tsx
 import { Metadata } from "next";
 import ProductCard from "@/components/ProductCard";
-import { connectDB } from "@/lib/db";
-import Product from "@/lib/models/Product";
+import { fetchAllProducts } from "@/lib/api/product";
 
-// ✅ Optional: SEO metadata for this page
 export const metadata: Metadata = {
-  title: "All Products | Leather Store",
+  title: "Buy Premium Leather Products in Bangladesh | Leather Store BD",
   description:
-    "Browse all premium leather goods including wallets, belts, bags and more.",
+    "Explore a wide range of premium leather wallets, belts, bags, and more. Quality craftsmanship, stylish designs, and fast delivery across Bangladesh.",
+  keywords: [
+    "leather products Bangladesh",
+    "buy leather wallet",
+    "leather bag BD",
+    "leather belt",
+    "premium leather goods",
+    "leather store bangladesh",
+  ],
+  openGraph: {
+    title: "Premium Leather Products | Leather Store BD",
+    description:
+      "Shop our collection of high-quality leather goods including wallets, belts, and accessories with fast delivery in Bangladesh.",
+    url: "https://leatherstorebd.com/products",
+    siteName: "Leather Store BD",
+    images: [
+      {
+        url: "https://leatherstorebd.com/og-image.jpg", // Optional OG image
+        width: 1200,
+        height: 630,
+        alt: "Leather Store Product Banner",
+      },
+    ],
+    locale: "en_US",
+    type: "website",
+  },
+  alternates: {
+    canonical: "https://leatherstorebd.com/products",
+  },
 };
 
 export default async function ProductsPage() {
-  await connectDB();
-
-  const products = await Product.find({ isActive: true }).sort({
-    createdAt: -1,
-  });
+  const products = await fetchAllProducts();
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-10">
-      <h1 className="text-3xl font-serif font-bold mb-8">All Products</h1>
+    <main className="max-w-7xl mx-auto px-6 py-10">
+      <h1 className="text-4xl font-bold font-serif mb-6 text-gray-800">
+        Explore Our Premium Leather Collection
+      </h1>
+      <p className="mb-10 text-gray-600">
+        Handcrafted leather wallets, belts, bags, and accessories. Designed for
+        durability, elegance, and everyday style.
+      </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product: any) => (
+        {products.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}
       </div>
-    </div>
+    </main>
   );
 }

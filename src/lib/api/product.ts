@@ -20,3 +20,22 @@ export async function fetchProductById(
     return null;
   }
 }
+
+export async function fetchAllProducts(): Promise<ProductType[]> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/all`,
+      {
+        cache: "no-store",
+      }
+    );
+
+    if (!res.ok) return [];
+
+    const data = await res.json();
+    return data.products as ProductType[];
+  } catch (err) {
+    console.error("Failed to fetch products", err);
+    return [];
+  }
+}
