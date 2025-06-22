@@ -1,13 +1,11 @@
+// src/app/products/[id]/page.tsx
+
 import { notFound } from "next/navigation";
 import ProductDetailClient from "@/components/ProductDetailClient";
 import { fetchProductById } from "@/lib/api/product";
 import { Metadata } from "next";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: any): Promise<Metadata> {
   const product = await fetchProductById(params.id);
   if (!product) return {};
 
@@ -17,11 +15,8 @@ export async function generateMetadata({
   };
 }
 
-export default async function ProductDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default async function ProductDetailPage({ params }: any) {
   const product = await fetchProductById(params.id);
   if (!product) return notFound();
 

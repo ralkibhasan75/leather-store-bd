@@ -22,7 +22,7 @@ export default function RichTextEditor({ content, onChange }: Props) {
     if (editor && content !== editor.getHTML()) {
       editor.commands.setContent(content);
     }
-  }, [content]);
+  }, [content, editor]);
 
   return (
     <div className="border rounded px-3 py-2">

@@ -10,8 +10,17 @@ import ProductTableSkeleton from "@/components/ui/ProductTableSkeleton";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import { motion, AnimatePresence } from "framer-motion";
 
+interface ProductType {
+  _id: string;
+  title: string;
+  thumbnail: string;
+  price: number;
+  stock: number;
+  isActive: boolean;
+}
+
 export default function AdminProductList() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<string[]>([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -133,7 +142,7 @@ export default function AdminProductList() {
             </thead>
             <tbody className="divide-y">
               <AnimatePresence>
-                {products.map((p: any) => (
+                {products.map((p) => (
                   <motion.tr
                     key={p._id}
                     initial={{ opacity: 0, y: 10 }}

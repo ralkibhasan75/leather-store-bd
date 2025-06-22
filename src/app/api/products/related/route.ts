@@ -17,10 +17,15 @@ export async function GET(req: NextRequest) {
   const tags = tagsParam.split(",").map((tag) => tag.trim());
 
   try {
-    const relatedProducts = await Product.find({
-      _id: { $ne: new mongoose.Types.ObjectId(excludeId) },
+    const query: any = {
       tags: { $in: tags },
-    })
+    };
+
+    if (excludeId) {
+      query._id = { $ne: new mongoose.Types.ObjectId(excludeId) };
+    }
+
+    const relatedProducts = await Product.find(query)
       .limit(8)
       .select("title thumbnail price");
 

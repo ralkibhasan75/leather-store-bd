@@ -1,4 +1,6 @@
 // src/types/index.ts
+import { ReactNode } from "react";
+
 export type Product = {
   thumbnail: string;
   brand: ReactNode;

@@ -29,9 +29,9 @@ export default function ProductCreateForm() {
     ]);
   };
 
-  const handleThumbnailChange = (file: File) => {
+  const handleThumbnailChange = (file: File | null) => {
     setThumbnail(file);
-    setThumbPreview(URL.createObjectURL(file));
+    setThumbPreview(file ? URL.createObjectURL(file) : null);
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
