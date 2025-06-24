@@ -47,18 +47,14 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="py-16 px-6 bg-white">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8 text-center">
+        <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-8 text-center">
           {[
             {
               icon: "👜",
               title: "Premium Leather",
               desc: "Only the finest quality materials",
             },
-            {
-              icon: "🛠️",
-              title: "Handcrafted",
-              desc: "Expertly made with precision",
-            },
+            
             {
               icon: "🚚",
               title: "Fast Delivery",
@@ -83,7 +79,7 @@ export default function HomePage() {
           <h2 className="text-3xl font-serif font-semibold mb-10 text-center">
             Featured Products
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {loading
               ? Array.from({ length: 4 }).map((_, i) => (
                   <SkeletonCard key={i} />

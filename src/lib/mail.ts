@@ -1,33 +1,48 @@
 import nodemailer from "nodemailer";
 
 export const transporter = nodemailer.createTransport({
-  service: "gmail", 
+  service: "gmail",
   auth: {
     user: process.env.MAIL_USER,
     pass: process.env.MAIL_PASS,
   },
 });
 
-export const sendPasswordResetEmail = async (to: string, token: string) => {
+export async function sendPasswordResetEmail(email: string, token: string) {
   const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/reset-password/${token}`;
 
-  const mailOptions = {
-    from: `"Leather Store BD" <${process.env.MAIL_USER}>`,
-    to,
-    subject: "Reset Your Password - Leather Store BD",
+  await transporter.sendMail({
+    to: email,
+    from: '"Leather Store BD" <no-reply@leatherstorebd.com>',
+    subject: "Reset Your Password – Leather Store BD",
     html: `
-      <h2>Password Reset</h2>
-      <p>You requested to reset your password.</p>
-      <p>Click the link below to set a new password:</p>
-      <a href="${resetUrl}" style="padding:10px 20px;background:#2c1e1e;color:#fff;text-decoration:none;border-radius:6px;">
-        Reset Password
-      </a>
-      <p>This link will expire in 15 minutes.</p>
-    `,
-  };
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f8f4f2; border-radius: 8px; border: 1px solid #ddd;">
+        <h2 style="color: #4b1c1c;">Forgot Your Password?</h2>
+        <p style="font-size: 15px; color: #333;">Hi there,</p>
+        <p style="font-size: 15px; color: #333;">
+          We received a request to reset your password. Click the button below to choose a new one:
+        </p>
+        
+        <div style="text-align: center; margin: 30px 0;">
+          <a href="${resetUrl}" 
+             style="display: inline-block; background-color: #4b1c1c; color: #fff; padding: 12px 24px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+            Reset Password
+          </a>
+        </div>
 
-  await transporter.sendMail(mailOptions);
-};
+        <p style="font-size: 14px; color: #666;">
+          This link is valid for <strong>15 minutes</strong>. If you didn’t request a password reset, you can safely ignore this email.
+        </p>
+
+        <hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;" />
+
+        <p style="font-size: 12px; color: #aaa; text-align: center;">
+          &copy; ${new Date().getFullYear()} Leather Store BD – All rights reserved.
+        </p>
+      </div>
+    `,
+  });
+}
 
 export const sendOrderConfirmationEmail = async ({
   to,
@@ -43,23 +58,39 @@ export const sendOrderConfirmationEmail = async ({
   total: number;
 }) => {
   const htmlContent = `
-    <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
-      <h2 style="color: #4b1c1c;">Thank you for your order, ${
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f8f4f2; border-radius: 8px; border: 1px solid #ddd;">
+      <h2 style="color: #4b1c1c;">Thank You for Your Order, ${
         customer.name
       }!</h2>
-      <p>We've received your order and will process it shortly. Here's a summary:</p>
+      <p style="font-size: 15px; color: #333;">
+        We’ve received your order and will process it soon. Here’s a summary of your purchase:
+      </p>
 
-      <h3>🛍️ Order Items:</h3>
-      <ul>
-        ${items
-          .map(
-            (item) =>
-              `<li>${item.quantity} × ${item.title} - ৳${item.price}</li>`
-          )
-          .join("")}
-      </ul>
+      <h3 style="margin-top: 24px; font-size: 16px; color: #333;">🛍️ Order Items:</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 8px;">
+        <thead>
+          <tr>
+            <th align="left" style="padding: 8px 0;">Item</th>
+            <th align="center" style="padding: 8px 0;">Qty</th>
+            <th align="right" style="padding: 8px 0;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${items
+            .map(
+              (item) => `
+            <tr>
+              <td style="padding: 6px 0; border-bottom: 1px solid #eee;">${item.title}</td>
+              <td align="center" style="padding: 6px 0; border-bottom: 1px solid #eee;">${item.quantity}</td>
+              <td align="right" style="padding: 6px 0; border-bottom: 1px solid #eee;">৳${item.price}</td>
+            </tr>
+          `
+            )
+            .join("")}
+        </tbody>
+      </table>
 
-      <p><strong>Total:</strong> ৳${total}</p>
+      <p style="margin-top: 16px; font-size: 16px;"><strong>Total:</strong> ৳${total}</p>
       <p><strong>Payment Method:</strong> ${payment.method}</p>
       ${
         payment.trxId
@@ -67,16 +98,21 @@ export const sendOrderConfirmationEmail = async ({
           : ""
       }
 
-      <h3>📦 Shipping Info:</h3>
-      <p>
-        ${customer.name}<br />
-        ${customer.address}<br />
-        📞 ${customer.phone}<br />
+      <h3 style="margin-top: 24px; font-size: 16px; color: #333;">📦 Shipping Info:</h3>
+      <div style="line-height: 1.6; font-size: 14px; color: #333;">
+        ${customer.name}<br/>
+        ${customer.address}<br/>
+        📞 ${customer.phone}<br/>
         📧 ${customer.email}
-      </p>
+      </div>
 
-      <p style="margin-top: 30px;">We’ll notify you once it’s confirmed.</p>
-      <p style="color: #999;">Leather Store BD</p>
+    
+
+      <hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;" />
+
+      <p style="text-align: center; font-size: 12px; color: #999;">
+        &copy; ${new Date().getFullYear()} Leather Store BD. All rights reserved.
+      </p>
     </div>
   `;
 

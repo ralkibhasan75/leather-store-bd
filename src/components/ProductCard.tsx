@@ -12,6 +12,7 @@ type Product = {
 };
 
 export default function ProductCard({ product }: { product: Product }) {
+  console.log(product.title, product._id);
   return (
     <Link
       href={`/products/${product._id}`}
@@ -26,13 +27,13 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-serif font-semibold mb-1 truncate">
+        <h3 className="text-lg font-serif font-semibold mb-1">
           {product.title}
         </h3>
         {/* <p className="text-sm text-gray-600 mb-2 line-clamp-2">
           {product.description}
         </p> */}
-        <div className="text-brand font-medium">${product.price}</div>
+        <div className="text-brand font-medium">৳ {product.price}</div>
       </div>
     </Link>
   );

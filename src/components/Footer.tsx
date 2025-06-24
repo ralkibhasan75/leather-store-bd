@@ -95,7 +95,7 @@ export default function Footer() {
               <FaFacebookF size={20} />
             </Link>
             <Link
-              href="https://wa.me/01827189625"
+              href="https://api.whatsapp.com/send?phone=8801560042479&text=Hello%20Leather%20Store%20BD"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#e5c68a] transition"
@@ -103,7 +103,7 @@ export default function Footer() {
               <FaWhatsapp size={20} />
             </Link>
             <Link
-              href="https://instagram.com/01827189625"
+              href="https://www.instagram.com/leather_store_bd"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-[#e5c68a] transition"

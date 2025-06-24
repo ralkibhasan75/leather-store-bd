@@ -10,7 +10,7 @@ export async function POST(req: Request) {
 
   const user = await User.findOne({ email });
   if (!user) {
-    return NextResponse.json({ success: true }); // Avoid email enumeration
+    return NextResponse.json({ success: true }); 
   }
 
   const token = crypto.randomBytes(32).toString("hex");

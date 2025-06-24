@@ -121,9 +121,9 @@ export default function CheckoutClient() {
   };
 
   const paymentNumbers = {
-    bKash: "01700-XXXXXX",
-    Nagad: "01800-XXXXXX",
-    Rocket: "01900-XXXXXX",
+    bKash: "01827189625",
+    Nagad: "01827189625",
+    Rocket: "01827189625",
   };
 
   return (

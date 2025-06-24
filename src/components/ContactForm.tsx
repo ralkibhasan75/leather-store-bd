@@ -82,7 +82,7 @@ export default function ContactForm() {
             <div>
               <h4 className="font-semibold">Phone</h4>
               <a
-                href="tel:+8801560042479"
+                href="https://api.whatsapp.com/send?phone=8801560042479&text=Hello%20Leather%20Store%20BD"
                 className="text-[var(--color-brand)] hover:underline"
               >
                 +88 0156 004 2479
@@ -97,7 +97,7 @@ export default function ContactForm() {
                 href="mailto:support@leatherstorebd.com"
                 className="text-[var(--color-brand)] hover:underline"
               >
-                support@leatherstorebd.com
+                leatherstorebd@gmail.com
               </a>
             </div>
           </div>

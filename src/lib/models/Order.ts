@@ -13,8 +13,11 @@ const OrderItemSchema = new mongoose.Schema(
 
 const OrderSchema = new mongoose.Schema(
   {
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // ✅ Add this
-
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: false,
+    },
     customer: {
       name: String,
       email: String,

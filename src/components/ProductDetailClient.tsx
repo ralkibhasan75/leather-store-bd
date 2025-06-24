@@ -186,7 +186,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {related.map((item) => (
           <Link
             key={item._id}
-            href={`/product/${item._id}`}
+            href={`/products/${item._id}`}
             className="block group border border-gray-200 hover:border-amber-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
           >
             <div className="relative w-full aspect-square bg-gray-100">

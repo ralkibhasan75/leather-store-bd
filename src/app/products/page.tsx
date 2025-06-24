@@ -23,7 +23,7 @@ export const metadata: Metadata = {
     siteName: "Leather Store BD",
     images: [
       {
-        url: "https://leatherstorebd.com/og-image.jpg", // Optional OG image
+        url: "https://leatherstorebd.com/og-image.jpg", 
         width: 1200,
         height: 630,
         alt: "Leather Store Product Banner",
@@ -50,7 +50,7 @@ export default async function ProductsPage() {
         durability, elegance, and everyday style.
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard key={product._id} product={product} />
         ))}
