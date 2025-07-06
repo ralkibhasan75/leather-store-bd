@@ -8,6 +8,7 @@ import { Types } from "mongoose";
 type CartItem = {
   productId: Types.ObjectId;
   quantity: number;
+  selectedSize?: string; // ✅ include this
 };
 
 type CartDoc = {
@@ -39,6 +40,7 @@ export async function GET(req: NextRequest) {
         return {
           ...product,
           quantity: item.quantity,
+          selectedSize: item.selectedSize ?? "", // ✅ Fix here
         };
       })
     );

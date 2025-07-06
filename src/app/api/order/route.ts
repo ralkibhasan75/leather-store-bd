@@ -3,8 +3,8 @@ import { connectDB } from "@/lib/db";
 import Order from "@/lib/models/Order";
 import Product from "@/lib/models/Product";
 import { sendOrderConfirmationEmail } from "@/lib/mail";
-import { ProductType } from "@/types/Product";
 import { getCurrentUser } from "@/lib/auth";
+import { ProductType } from "@/types/Product";
 
 export async function POST(req: NextRequest) {
   await connectDB();
@@ -32,14 +32,14 @@ export async function POST(req: NextRequest) {
       total: number;
     } = body;
 
-    if (!customerInfo || !payment || !items || items.length === 0 || !total) {
+    if (!customerInfo || !payment || !items?.length || !total) {
       return NextResponse.json(
         { error: "Missing order data" },
         { status: 400 }
       );
     }
 
-    // Fetch full product details
+    // Fetch product details for each item
     const detailedItems = await Promise.all(
       items.map(async (item) => {
         const product = (await Product.findById(
@@ -52,14 +52,16 @@ export async function POST(req: NextRequest) {
           title: product.title,
           model: product.model,
           price: product.price,
+          discount: product.discount ?? 0,
           quantity: item.quantity,
-          selectedSize: item.selectedSize || null,
+          selectedSize: item.selectedSize ?? undefined, // ✅ FIX: ensure it's string | undefined
         };
       })
     );
 
+    // Create order in DB
     const order = await Order.create({
-      user: userId || undefined, // Only store if available (for guests allow null)
+      user: userId || undefined,
       customer: customerInfo,
       payment,
       items: detailedItems,
@@ -67,10 +69,19 @@ export async function POST(req: NextRequest) {
       status: "Pending",
     });
 
+    // Format for email
+    const emailItems = detailedItems.map((item) => ({
+      title: item.title,
+      price: item.price,
+      quantity: item.quantity,
+      selectedSize: item.selectedSize,
+      discount: item.discount,
+    }));
+
     await sendOrderConfirmationEmail({
       to: customerInfo.email,
       customer: customerInfo,
-      items: detailedItems,
+      items: emailItems,
       payment,
       total,
     });

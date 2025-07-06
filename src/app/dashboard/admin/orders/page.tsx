@@ -39,6 +39,7 @@ interface Order {
     quantity: number;
     price: number;
     selectedSize?: string; // ✅ Added here
+    discount?: number; // ✅ Added here
   }[];
 }
 
@@ -380,7 +381,22 @@ export default function AdminOrdersPage() {
                                 )}
                               </div>
                               <div className="font-medium text-right">
-                                ৳ {(item.price * item.quantity).toFixed(2)}
+                                ৳{" "}
+                                {(
+                                  item.price *
+                                  (1 - (item.discount ?? 0) / 100) *
+                                  item.quantity
+                                ).toFixed(2)}
+                                {item.discount ? (
+                                  <div className="text-xs text-gray-400 line-through">
+                                    ৳ {(item.price * item.quantity).toFixed(2)}
+                                  </div>
+                                ) : null}
+                                {item.discount ? (
+                                  <span className="block text-xs text-red-500">
+                                    {item.discount}% off
+                                  </span>
+                                ) : null}
                               </div>
                             </li>
                           ))}

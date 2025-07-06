@@ -53,10 +53,20 @@ export const sendOrderConfirmationEmail = async ({
 }: {
   to: string;
   customer: { name: string; email: string; phone: string; address: string };
-  items: { title: string; price: number; quantity: number }[];
+  items: {
+    title: string;
+    price: number;
+    quantity: number;
+    selectedSize?: string;
+    discount?: number;
+  }[];
+
   payment: { method: string; trxId?: string | null };
   total: number;
 }) => {
+  const getDiscountedPrice = (price: number, discount: number = 0) =>
+    discount > 0 ? price - (price * discount) / 100 : price;
+
   const htmlContent = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; background-color: #f8f4f2; border-radius: 8px; border: 1px solid #ddd;">
       <h2 style="color: #4b1c1c;">Thank You for Your Order, ${
@@ -72,38 +82,41 @@ export const sendOrderConfirmationEmail = async ({
           <tr>
             <th align="left" style="padding: 8px 0;">Item</th>
             <th align="center" style="padding: 8px 0;">Qty</th>
-            <th align="right" style="padding: 8px 0;">Price</th>
+            <th align="right" style="padding: 8px 0;">Subtotal</th>
           </tr>
         </thead>
-       <tbody>
-  ${items
-    .map(
-      (item) => `
-    <tr>
-      <td style="padding: 6px 0; border-bottom: 1px solid #eee;">
-        ${item.title}${
-        (item as any).selectedSize
-          ? ` <span style="font-size: 13px; color: #666;">(Size: ${
-              (item as any).selectedSize
-            })</span>`
-          : ""
-      }
-      </td>
-      <td align="center" style="padding: 6px 0; border-bottom: 1px solid #eee;">
-        ${item.quantity}
-      </td>
-      <td align="right" style="padding: 6px 0; border-bottom: 1px solid #eee;">
-        ৳${item.price}
-      </td>
-    </tr>
-  `
-    )
-    .join("")}
-</tbody>
-
+        <tbody>
+          ${items
+            .map((item) => {
+              const discounted = getDiscountedPrice(item.price, item.discount);
+              return `
+              <tr>
+                <td style="padding: 6px 0; border-bottom: 1px solid #eee;">
+                  ${item.title}
+                  ${
+                    item.selectedSize
+                      ? `<div style="font-size: 13px; color: #666;">Size: ${item.selectedSize}</div>`
+                      : ""
+                  }
+                  <div style="font-size: 12px; color: #888;">
+                    ৳${discounted.toFixed(2)} × ${item.quantity}
+                  </div>
+                </td>
+                <td align="center" style="padding: 6px 0; border-bottom: 1px solid #eee;">
+                  ${item.quantity}
+                </td>
+                <td align="right" style="padding: 6px 0; border-bottom: 1px solid #eee;">
+                  ৳${(discounted * item.quantity).toFixed(2)}
+                </td>
+              </tr>`;
+            })
+            .join("")}
+        </tbody>
       </table>
 
-      <p style="margin-top: 16px; font-size: 16px;"><strong>Total:</strong> ৳${total}</p>
+      <p style="margin-top: 16px; font-size: 16px;"><strong>Total:</strong> ৳${total.toFixed(
+        2
+      )}</p>
       <p><strong>Payment Method:</strong> ${payment.method}</p>
       ${
         payment.trxId
@@ -119,10 +132,17 @@ export const sendOrderConfirmationEmail = async ({
         📧 ${customer.email}
       </div>
 
-    
+      <h3 style="margin-top: 24px; font-size: 16px; color: #333;">❓ Need Help?</h3>
+      <p style="font-size: 14px; color: #444;">
+        If you have any questions about your order, feel free to contact us via:
+      </p>
+      <ul style="font-size: 14px; color: #444; padding-left: 16px;">
+        <li>Phone: <strong>+88 0156 004 2479</strong></li>
+        <li>Email: <strong>leatherstorebd@gmail.com</strong></li>
+        <li>Facebook: <a href="https://www.facebook.com/share/173HkFCKrJ" style="color: #4b1c1c;">Leather Store BD</a></li>
+      </ul>
 
       <hr style="margin: 24px 0; border: none; border-top: 1px solid #ddd;" />
-
       <p style="text-align: center; font-size: 12px; color: #999;">
         &copy; ${new Date().getFullYear()} Leather Store BD. All rights reserved.
       </p>

@@ -33,13 +33,17 @@ export async function POST(req: NextRequest) {
       return {
         productId: new mongoose.Types.ObjectId(item._id),
         quantity: item.quantity,
+        selectedSize: item.selectedSize ?? "", // ✅ include size
       };
     })
     .filter(
       (
         item
-      ): item is { productId: mongoose.Types.ObjectId; quantity: number } =>
-        !!item
+      ): item is {
+        productId: mongoose.Types.ObjectId;
+        quantity: number;
+        selectedSize: string;
+      } => !!item
     );
 
   if (items.length === 0) {

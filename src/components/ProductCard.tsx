@@ -51,7 +51,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </div>
           )}
         </div>
-        <div className="flex gap-4 mt-6">
+        {/* <div className="flex gap-4 mt-6">
           <button
             onClick={() =>
               (window.location.href = `/checkout?productId=${product._id}&quantity=1`)
@@ -60,7 +60,7 @@ export default function ProductCard({ product }: { product: Product }) {
           >
             Buy Now
           </button>
-        </div>
+        </div> */}
       </div>
     </Link>
   );

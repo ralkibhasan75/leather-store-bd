@@ -7,8 +7,9 @@ const OrderItemSchema = new mongoose.Schema(
     title: String,
     model: String,
     price: Number,
+    discount: Number, // ✅ Add this line
     quantity: Number,
-    selectedSize: String, // ✅ new field
+    selectedSize: String,
   },
   { _id: false }
 );

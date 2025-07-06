@@ -30,7 +30,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
-      setCart(JSON.parse(savedCart));
+      try {
+        const parsed: CartItem[] = JSON.parse(savedCart);
+
+        // 🔥 Remove duplicates based on _id + selectedSize
+        const unique = parsed.filter(
+          (item, index, self) =>
+            index ===
+            self.findIndex(
+              (i) =>
+                i._id === item._id &&
+                (i.selectedSize ?? "") === (item.selectedSize ?? "")
+            )
+        );
+
+        setCart(unique);
+      } catch (e) {
+        console.error("❌ Failed to parse savedCart:", e);
+      }
     }
   }, []);
 
@@ -44,22 +61,35 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const dbCart: CartItem[] = data.cart;
 
         setCart((localCart) => {
-          const merged = [...localCart];
+          const merged: CartItem[] = [...localCart];
 
-          dbCart.forEach((dbItem) => {
+          for (const dbItem of dbCart) {
             const existing = merged.find(
               (item) =>
                 item._id === dbItem._id &&
-                item.selectedSize === dbItem.selectedSize
+                (item.selectedSize ?? "") === (dbItem.selectedSize ?? "")
             );
+
             if (existing) {
               existing.quantity = Math.max(existing.quantity, dbItem.quantity);
             } else {
               merged.push(dbItem);
             }
-          });
+          }
 
-          return merged;
+          // ✅ final deduplication
+          const deduped = merged.filter(
+            (item, index, self) =>
+              index ===
+              self.findIndex(
+                (i) =>
+                  i._id === item._id &&
+                  (i.selectedSize ?? "") === (item.selectedSize ?? "")
+              )
+          );
+          console.log("🧹 Deduped Cart:", deduped);
+
+          return deduped;
         });
       } catch (error) {
         console.error("❌ Failed to load cart from DB:", error);
@@ -95,8 +125,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setCart((prev) => {
       const existing = prev.find(
         (item) =>
-          item._id === product._id && item.selectedSize === product.selectedSize
+          item._id === product._id &&
+          (item.selectedSize ?? "") === (product.selectedSize ?? "")
       );
+
       if (existing) {
         const newQty = existing.quantity + 1;
         if (newQty > product.stock) return prev;

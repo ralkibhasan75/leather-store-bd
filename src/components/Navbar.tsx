@@ -7,6 +7,7 @@ import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import CartDrawer from "./CartDrawer";
 import { useAuth } from "@/context/AuthContext";
+import Image from "next/image";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -88,6 +89,7 @@ export default function Navbar() {
         >
           LeatherStore<span className="text-xs ml-1">BD</span>
         </Link>
+        {/* <Image alt="logo" src={"/logo.jpg"} height={50} width={100} /> */}
         {/* Mobile Search (visible only on small screens) */}
         <div className="flex-1 mx-4 md:hidden">
           <div className="relative w-full">
@@ -122,6 +124,10 @@ export default function Navbar() {
               </ul>
             )}
           </div>
+        </div>
+        {/* Cart Drawer (always visible) */}
+        <div className="md:hidden items-center mx-1">
+          <CartDrawer />
         </div>
 
         {/* Desktop Nav */}
@@ -208,7 +214,7 @@ export default function Navbar() {
         </nav>
 
         {/* Mobile Menu Toggle */}
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
+        <button className="md:hidden ml-1" onClick={() => setOpen(!open)}>
           {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
