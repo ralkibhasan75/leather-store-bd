@@ -168,7 +168,7 @@ export default function AdminProductList() {
                       />
                     </td>
                     <td className="px-4 py-2 font-medium">{p.title}</td>
-                    <td className="px-4 py-2 text-gray-700">${p.price}</td>
+                    <td className="px-4 py-2 text-gray-700">৳{p.price}</td>
                     <td className="px-4 py-2">{p.stock}</td>
                     <td className="px-4 py-2">
                       {p.isActive ? (

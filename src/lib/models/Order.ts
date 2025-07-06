@@ -1,3 +1,4 @@
+// src/lib/models/Order.ts
 import mongoose from "mongoose";
 
 const OrderItemSchema = new mongoose.Schema(
@@ -7,6 +8,7 @@ const OrderItemSchema = new mongoose.Schema(
     model: String,
     price: Number,
     quantity: Number,
+    selectedSize: String, // ✅ new field
   },
   { _id: false }
 );

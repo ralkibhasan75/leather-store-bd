@@ -2,6 +2,7 @@
 import { ReactNode } from "react";
 
 export type Product = {
+  sizes?: string[]; // ✅ make it optional here
   thumbnail: string;
   brand: ReactNode;
   model: ReactNode;

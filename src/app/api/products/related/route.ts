@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
 
     const relatedProducts = await Product.find(query)
       .limit(8)
-      .select("title thumbnail price");
+      .select("title thumbnail price discount");
 
     return NextResponse.json(relatedProducts);
   } catch (err) {

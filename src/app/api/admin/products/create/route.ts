@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import cloudinary from "@/lib/cloudinary";
-import { connectDB } from "@/lib/db"; // Your DB connection
-import Product from "@/lib/models/Product"; // Your Mongoose product model
+import { connectDB } from "@/lib/db";
+import Product from "@/lib/models/Product";
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,16 +21,42 @@ export async function POST(req: NextRequest) {
     const isActive = formData.get("isActive") !== "off";
 
     const tags = JSON.parse((formData.get("tags") as string) || "[]");
+    const sizes = JSON.parse((formData.get("sizes") as string) || "[]");
+
     const thumbnailUrl = formData.get("thumbnailUrl") as string;
     const galleryUrls = formData
       .getAll("galleryUrls")
       .map((entry) => String(entry));
-    console.log("📝 Incoming Product:", {
-      title,
-      thumbnailUrl,
-      galleryUrls,
-      tags,
-    });
+
+    // ✅ Validate required sizes for belt/shoe
+    if (["belt", "shoe"].includes(category)) {
+      if (!Array.isArray(sizes) || sizes.length === 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Sizes are required for belt and shoe categories.",
+          },
+          { status: 400 }
+        );
+      }
+
+      // ✅ Validate each size is a number
+      const invalidSizes = sizes.filter(
+        (s: any) => isNaN(Number(s)) || Number(s) <= 0
+      );
+
+      if (invalidSizes.length > 0) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: `Invalid sizes provided: ${invalidSizes.join(", ")}`,
+          },
+          { status: 400 }
+        );
+      }
+    }
+    console.log(req.formData, 'formData');
+
     const product = await Product.create({
       title,
       description,
@@ -43,6 +68,7 @@ export async function POST(req: NextRequest) {
       discount,
       couponCode,
       tags,
+      sizes, // ✅ insert sizes to DB
       thumbnail: thumbnailUrl,
       images: galleryUrls,
       isFeatured,
@@ -50,8 +76,8 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, product });
+    
   } catch (error: any) {
-    console.error("❌ API Product Create Error:", error);
     return NextResponse.json(
       { success: false, error: error.message },
       { status: 500 }

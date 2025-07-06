@@ -1,18 +1,11 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-} from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/context/CartContext";
 import { Product } from "@/types";
+import toast from "react-hot-toast";
 
 export default function ProductDetailClient({ product }: { product: Product }) {
   const [selectedImage, setSelectedImage] = useState(
@@ -20,6 +13,9 @@ export default function ProductDetailClient({ product }: { product: Product }) {
   );
   const { addToCart } = useCart();
   const [related, setRelated] = useState<Product[]>([]);
+  const [selectedSize, setSelectedSize] = useState<string>("");
+
+  const hasSizes = Array.isArray(product.sizes) && product.sizes.length > 0;
 
   useEffect(() => {
     const fetchRelated = async () => {
@@ -35,8 +31,33 @@ export default function ProductDetailClient({ product }: { product: Product }) {
     fetchRelated();
   }, [product]);
 
+  const handleAddToCart = () => {
+    if (hasSizes && !selectedSize) {
+      toast.error("Please select a size.");
+      return;
+    }
+
+    addToCart({
+      ...product,
+      selectedSize: hasSizes ? selectedSize : undefined,
+    });
+    toast.success("Added to cart");
+  };
+
+  const handleBuyNow = () => {
+    if (hasSizes && !selectedSize) {
+      toast.error("Please select a size.");
+      return;
+    }
+
+    const url = `/checkout?productId=${product._id}&quantity=1${
+      hasSizes ? `&size=${selectedSize}` : ""
+    }`;
+    window.location.href = url;
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-6 py-24">
+    <div className="max-w-7xl mx-auto px-6 py-5 md:py-24">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
         {/* Images */}
         <div>
@@ -92,11 +113,6 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 </div>
                 <div className="text-sm text-green-700 font-medium mt-1">
                   You save {product.discount}%!
-                  {/* {product.couponCode && (
-                    <span className="ml-2 px-2 py-0.5 text-xs rounded bg-amber-100 text-amber-900 border border-amber-800">
-                      Coupon: {product.couponCode}
-                    </span>
-                  )} */}
                 </div>
               </>
             ) : (
@@ -104,6 +120,43 @@ export default function ProductDetailClient({ product }: { product: Product }) {
                 Tk. {product.price.toFixed(2)}
               </div>
             )}
+          </div>
+
+          {/* Size Selection */}
+          {hasSizes && (
+            <>
+              <label className="block text-sm font-medium mb-1">
+                Select Size
+              </label>
+              <select
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+                className="border px-3 py-2 rounded w-40"
+              >
+                <option value="">-- Select Size --</option>
+                {product.sizes!.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            </>
+          )}
+
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={handleAddToCart}
+              className="bg-amber-950 text-white px-6 py-2 rounded hover:bg-[#2a1f1f] transition"
+            >
+              Add to Cart
+            </button>
+
+            <button
+              onClick={handleBuyNow}
+              className="border border-amber-950 text-amber-950 hover:bg-amber-950 hover:text-white px-6 py-2 rounded transition"
+            >
+              Buy Now
+            </button>
           </div>
 
           <div
@@ -122,60 +175,14 @@ export default function ProductDetailClient({ product }: { product: Product }) {
 
           <div className="text-sm text-gray-600 mb-4">
             Tags:
-            {product.tags.map(
-              (
-                tag:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | ReactElement<unknown, string | JSXElementConstructor<any>>
-                  | Iterable<ReactNode>
-                  | ReactPortal
-                  | Promise<
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | ReactPortal
-                      | ReactElement<
-                          unknown,
-                          string | JSXElementConstructor<any>
-                        >
-                      | Iterable<ReactNode>
-                      | null
-                      | undefined
-                    >
-                  | null
-                  | undefined,
-                i: Key | null | undefined
-              ) => (
-                <span
-                  key={i}
-                  className="ml-2 mb-0.5 inline-block px-3 py-1 rounded-full border border-amber-800 bg-amber-50 text-amber-900 text-xs font-medium shadow-sm hover:shadow-md transition"
-                >
-                  #{tag}
-                </span>
-              )
-            )}
-          </div>
-
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={() => addToCart(product)}
-              className="bg-amber-950 text-white px-6 py-2 rounded hover:bg-[#2a1f1f] transition"
-            >
-              Add to Cart
-            </button>
-
-            <button
-              onClick={() =>
-                (window.location.href = `/checkout?productId=${product._id}&quantity=1`)
-              }
-              className="border border-amber-950 text-amber-950 hover:bg-amber-950 hover:text-white px-6 py-2 rounded transition"
-            >
-              Buy Now
-            </button>
+            {product.tags.map((tag: string, i: number) => (
+              <span
+                key={i}
+                className="ml-2 mb-0.5 inline-block px-3 py-1 rounded-full border border-amber-800 bg-amber-50 text-amber-900 text-xs font-medium shadow-sm hover:shadow-md transition"
+              >
+                #{tag}
+              </span>
+            ))}
           </div>
         </div>
       </div>
@@ -201,9 +208,24 @@ export default function ProductDetailClient({ product }: { product: Product }) {
               <h3 className="text-sm font-semibold text-gray-800 group-hover:text-amber-800 transition line-clamp-2">
                 {item.title}
               </h3>
-              <p className="text-amber-900 text-sm mt-1 font-semibold">
-                Tk. {item.price}
-              </p>
+
+              {item.discount > 0 ? (
+                <>
+                  <div className="text-xl text-red-600 font-bold">
+                    Tk.{" "}
+                    {(item.price - (item.price * item.discount) / 100).toFixed(
+                      2
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500 line-through">
+                    Tk. {item.price.toFixed(2)}
+                  </div>
+                </>
+              ) : (
+                <div className="text-xl text-brand font-semibold">
+                  Tk. {item.price.toFixed(2)}
+                </div>
+              )}
             </div>
           </Link>
         ))}

@@ -38,6 +38,7 @@ interface Order {
     title: string;
     quantity: number;
     price: number;
+    selectedSize?: string; // ✅ Added here
   }[];
 }
 
@@ -134,11 +135,9 @@ export default function AdminOrdersPage() {
             </tr>
           </thead>
           <tbody>
-            {filteredOrders.map((order,idx) => (
+            {filteredOrders.map((order, idx) => (
               <tr key={order._id} className="border-t hover:bg-gray-50">
-                <td className="p-4 whitespace-nowrap">
-                  {idx + 1}
-                </td>
+                <td className="p-4 whitespace-nowrap">{idx + 1}</td>
                 <td className="p-4 whitespace-nowrap">
                   <div className="font-semibold text-gray-800">
                     {order.customer.name}
@@ -148,7 +147,17 @@ export default function AdminOrdersPage() {
                     <br />
                     {order.customer.email}
                   </div>
+                  {order.items?.some((item) => item.selectedSize) && (
+                    <div className="mt-1 text-xs text-gray-500">
+                      Sizes:{" "}
+                      {order.items
+                        ?.filter((item) => item.selectedSize)
+                        .map((item) => item.selectedSize)
+                        .join(", ")}
+                    </div>
+                  )}
                 </td>
+
                 <td className="p-4">
                   <div>{order.payment.method}</div>
                   {order.payment.trxId && (
@@ -359,6 +368,14 @@ export default function AdminOrdersPage() {
                                 {item.model && (
                                   <div className="text-gray-500">
                                     Model: {item.model}
+                                  </div>
+                                )}
+                                {item.selectedSize && (
+                                  <div className="text-gray-500">
+                                    Size:{" "}
+                                    <span className="inline-block rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium">
+                                      {item.selectedSize}
+                                    </span>
                                   </div>
                                 )}
                               </div>

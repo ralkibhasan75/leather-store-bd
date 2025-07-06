@@ -75,19 +75,32 @@ export const sendOrderConfirmationEmail = async ({
             <th align="right" style="padding: 8px 0;">Price</th>
           </tr>
         </thead>
-        <tbody>
-          ${items
-            .map(
-              (item) => `
-            <tr>
-              <td style="padding: 6px 0; border-bottom: 1px solid #eee;">${item.title}</td>
-              <td align="center" style="padding: 6px 0; border-bottom: 1px solid #eee;">${item.quantity}</td>
-              <td align="right" style="padding: 6px 0; border-bottom: 1px solid #eee;">৳${item.price}</td>
-            </tr>
-          `
-            )
-            .join("")}
-        </tbody>
+       <tbody>
+  ${items
+    .map(
+      (item) => `
+    <tr>
+      <td style="padding: 6px 0; border-bottom: 1px solid #eee;">
+        ${item.title}${
+        (item as any).selectedSize
+          ? ` <span style="font-size: 13px; color: #666;">(Size: ${
+              (item as any).selectedSize
+            })</span>`
+          : ""
+      }
+      </td>
+      <td align="center" style="padding: 6px 0; border-bottom: 1px solid #eee;">
+        ${item.quantity}
+      </td>
+      <td align="right" style="padding: 6px 0; border-bottom: 1px solid #eee;">
+        ৳${item.price}
+      </td>
+    </tr>
+  `
+    )
+    .join("")}
+</tbody>
+
       </table>
 
       <p style="margin-top: 16px; font-size: 16px;"><strong>Total:</strong> ৳${total}</p>

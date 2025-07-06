@@ -4,13 +4,20 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { Product } from "@/types";
 import { useAuth } from "@/context/AuthContext";
 
-type CartItem = Product & { quantity: number };
+type CartItem = Product & {
+  quantity: number;
+  selectedSize?: string; // ✅ added
+};
 
 type CartContextType = {
   cart: CartItem[];
-  addToCart: (product: Product) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
-  removeFromCart: (productId: string) => void;
+  addToCart: (product: Product & { selectedSize?: string }) => void;
+  updateQuantity: (
+    productId: string,
+    quantity: number,
+    selectedSize?: string
+  ) => void;
+  removeFromCart: (productId: string, selectedSize?: string) => void;
   clearCart: () => void;
 };
 
@@ -20,7 +27,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [cart, setCart] = useState<CartItem[]>([]);
   const { user } = useAuth();
 
-  // 1️⃣ Load cart from localStorage on first render
   useEffect(() => {
     const savedCart = localStorage.getItem("cart");
     if (savedCart) {
@@ -28,7 +34,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // 2️⃣ Load cart from DB on login & merge with local cart
   useEffect(() => {
     const loadCartFromDB = async () => {
       if (!user) return;
@@ -42,7 +47,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
           const merged = [...localCart];
 
           dbCart.forEach((dbItem) => {
-            const existing = merged.find((item) => item._id === dbItem._id);
+            const existing = merged.find(
+              (item) =>
+                item._id === dbItem._id &&
+                item.selectedSize === dbItem.selectedSize
+            );
             if (existing) {
               existing.quantity = Math.max(existing.quantity, dbItem.quantity);
             } else {
@@ -60,12 +69,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     loadCartFromDB();
   }, [user]);
 
-  // 3️⃣ Save to localStorage on cart change
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // 4️⃣ Save to DB on cart change if logged in
   useEffect(() => {
     const saveCartToDB = async () => {
       if (!user) return;
@@ -84,30 +91,47 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     saveCartToDB();
   }, [cart, user]);
 
-  const addToCart = (product: Product) => {
+  const addToCart = (product: Product & { selectedSize?: string }) => {
     setCart((prev) => {
-      const existing = prev.find((item) => item._id === product._id);
+      const existing = prev.find(
+        (item) =>
+          item._id === product._id && item.selectedSize === product.selectedSize
+      );
       if (existing) {
         const newQty = existing.quantity + 1;
-        if (newQty > product.stock) return prev; // stock check
+        if (newQty > product.stock) return prev;
         return prev.map((item) =>
-          item._id === product._id ? { ...item, quantity: newQty } : item
+          item._id === product._id && item.selectedSize === product.selectedSize
+            ? { ...item, quantity: newQty }
+            : item
         );
       }
+
       return [...prev, { ...product, quantity: 1 }];
     });
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (
+    productId: string,
+    quantity: number,
+    selectedSize?: string
+  ) => {
     setCart((prev) =>
       prev.map((item) =>
-        item._id === productId ? { ...item, quantity } : item
+        item._id === productId && item.selectedSize === selectedSize
+          ? { ...item, quantity }
+          : item
       )
     );
   };
 
-  const removeFromCart = (productId: string) => {
-    setCart((prev) => prev.filter((item) => item._id !== productId));
+  const removeFromCart = (productId: string, selectedSize?: string) => {
+    setCart((prev) =>
+      prev.filter(
+        (item) =>
+          !(item._id === productId && item.selectedSize === selectedSize)
+      )
+    );
   };
 
   const clearCart = () => {
@@ -116,7 +140,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, updateQuantity, removeFromCart, clearCart }}
+      value={{
+        cart,
+        addToCart,
+        updateQuantity,
+        removeFromCart,
+        clearCart,
+      }}
     >
       {children}
     </CartContext.Provider>

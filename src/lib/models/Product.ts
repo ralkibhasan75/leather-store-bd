@@ -1,4 +1,3 @@
-// src/models/Product.ts
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema(
@@ -17,6 +16,7 @@ const ProductSchema = new mongoose.Schema(
     images: [String],
     isFeatured: Boolean,
     isActive: Boolean,
+    sizes: [String], // optional: e.g. ["40", "41", "42"]
   },
   {
     timestamps: true,

@@ -65,7 +65,7 @@ export default function CartDrawer() {
               );
               return (
                 <div
-                  key={item._id}
+                  key={item._id + item.selectedSize} // ensure uniqueness per size variant
                   className="flex gap-4 border-b border-gray-200 pb-4"
                 >
                   <div className="relative w-20 h-20 shrink-0">
@@ -78,13 +78,25 @@ export default function CartDrawer() {
                   </div>
                   <div className="flex-1">
                     <h4 className="text-sm font-medium">{item.title}</h4>
+                    {item.selectedSize && (
+                      <div className="mt-1">
+                        <span className="inline-block text-xs text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-300 font-medium">
+                          Size: {item.selectedSize}
+                        </span>
+                      </div>
+                    )}
+
                     <p className="text-sm text-gray-500 mt-0.5">
                       ৳ {discountedPrice.toFixed(2)} × {item.quantity}
                     </p>
                     <div className="flex gap-2 items-center mt-2">
                       <button
                         onClick={() =>
-                          updateQuantity(item._id, item.quantity - 1)
+                          updateQuantity(
+                            item._id,
+                            item.quantity - 1,
+                            item.selectedSize
+                          )
                         }
                         className="w-7 h-7 border border-gray-300 rounded hover:bg-gray-100 transition"
                         disabled={item.quantity <= 1}
@@ -97,7 +109,11 @@ export default function CartDrawer() {
                       <button
                         onClick={() =>
                           item.quantity < item.stock &&
-                          updateQuantity(item._id, item.quantity + 1)
+                          updateQuantity(
+                            item._id,
+                            item.quantity + 1,
+                            item.selectedSize
+                          )
                         }
                         className="w-7 h-7 border border-gray-300 rounded hover:bg-gray-100 transition"
                         disabled={item.quantity >= item.stock}
@@ -112,7 +128,7 @@ export default function CartDrawer() {
                     )}
                   </div>
                   <button
-                    onClick={() => removeFromCart(item._id)}
+                    onClick={() => removeFromCart(item._id, item.selectedSize)}
                     className="text-gray-400 hover:text-red-500 transition"
                   >
                     <Trash2 size={18} />

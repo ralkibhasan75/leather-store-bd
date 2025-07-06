@@ -26,7 +26,8 @@ export async function fetchAllProducts(): Promise<ProductType[]> {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/all`,
       {
-        cache: "no-store",
+        // ✅ Use revalidate instead of no-store
+        next: { revalidate: 60 }, // Revalidate every 60 seconds
       }
     );
 

@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         address: string;
       };
       payment: { method: string; trxId?: string | null };
-      items: { productId: string; quantity: number }[];
+      items: { productId: string; quantity: number; selectedSize?: string }[];
       total: number;
     } = body;
 
@@ -53,6 +53,7 @@ export async function POST(req: NextRequest) {
           model: product.model,
           price: product.price,
           quantity: item.quantity,
+          selectedSize: item.selectedSize || null,
         };
       })
     );

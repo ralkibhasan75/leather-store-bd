@@ -2,6 +2,7 @@
 import { Metadata } from "next";
 import ProductCard from "@/components/ProductCard";
 import { fetchAllProducts } from "@/lib/api/product";
+export const revalidate = 60; // Revalidate every 60 seconds
 
 export const metadata: Metadata = {
   title: "Buy Premium Leather Products in Bangladesh | Leather Store BD",
@@ -23,7 +24,7 @@ export const metadata: Metadata = {
     siteName: "Leather Store BD",
     images: [
       {
-        url: "https://leatherstorebd.com/og-image.jpg", 
+        url: "https://leatherstorebd.com/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "Leather Store Product Banner",

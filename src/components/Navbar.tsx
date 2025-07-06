@@ -27,7 +27,7 @@ export default function Navbar() {
 
   const handleSearch = () => {
     if (query.trim()) {
-      router.push(`/products?search=${encodeURIComponent(query.trim())}`);
+      router.push(`/products/all?search=${encodeURIComponent(query.trim())}`);
       setShowSuggestions(false);
       setQuery("");
     }
@@ -88,6 +88,41 @@ export default function Navbar() {
         >
           LeatherStore<span className="text-xs ml-1">BD</span>
         </Link>
+        {/* Mobile Search (visible only on small screens) */}
+        <div className="flex-1 mx-4 md:hidden">
+          <div className="relative w-full">
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+              placeholder="Search products..."
+              className="w-full pl-10 pr-3 py-2 border rounded-full text-sm shadow-sm"
+            />
+            <Search
+              size={18}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
+              onClick={handleSearch}
+            />
+            {showSuggestions && suggestions.length > 0 && (
+              <ul className="absolute z-20 mt-1 bg-white rounded shadow border w-full text-sm max-h-60 overflow-y-auto">
+                {suggestions.map((p: any) => (
+                  <li
+                    key={p._id}
+                    className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => {
+                      setQuery("");
+                      setShowSuggestions(false);
+                      router.push(`/products/${p._id}`);
+                    }}
+                  >
+                    {p.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 flex-1 justify-end">
@@ -191,23 +226,6 @@ export default function Navbar() {
               {text}
             </Link>
           ))}
-
-          {/* Mobile Search */}
-          <div className="relative">
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-              placeholder="Search products..."
-              className="w-full pl-10 pr-3 py-2 border rounded-full text-sm"
-            />
-            <Search
-              size={18}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 cursor-pointer"
-              onClick={handleSearch}
-            />
-          </div>
 
           {user ? (
             <>

@@ -16,9 +16,9 @@ export async function getCurrentUser(): Promise<CurrentUserType | null> {
   const token = cookieStore.get("token")?.value;
 
   if (!token) return null;
-
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as CurrentUserType;
+    console.log(decoded, "user");
     return decoded;
   } catch {
     return null;

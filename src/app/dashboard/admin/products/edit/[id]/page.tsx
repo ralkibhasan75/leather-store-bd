@@ -14,7 +14,8 @@ export default function EditProductPage() {
 
   const [product, setProduct] = useState<any>(null);
   const [description, setDescription] = useState<string>("");
-
+  const [category, setCategory] = useState<string>("");
+  const [sizes, setSizes] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
 
   const [tags, setTags] = useState<string[]>([]);
@@ -30,11 +31,14 @@ export default function EditProductPage() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.product) return toast.error("Product not found");
-        setProduct(data.product);
-        setDescription(data.product.description || "");
-        setTags(data.product.tags || []);
-        setThumbPreview(data.product.thumbnail);
-        setGalleryPreviews(data.product.images || []);
+        const p = data.product;
+        setProduct(p);
+        setDescription(p.description || "");
+        setTags(p.tags || []);
+        setThumbPreview(p.thumbnail);
+        setGalleryPreviews(p.images || []);
+        setCategory(p.category || "");
+        setSizes(p.sizes || []);
       });
   }, [id]);
 
@@ -55,6 +59,9 @@ export default function EditProductPage() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (["belt", "shoe"].includes(category) && sizes.length === 0) {
+      return toast.error("Sizes are required for belt and shoe categories.");
+    }
     setLoading(true);
 
     const form = e.currentTarget;
@@ -82,12 +89,13 @@ export default function EditProductPage() {
         description,
         brand: formData.get("brand"),
         model: formData.get("model"),
-        category: formData.get("category"),
+        category,
         price: Number(formData.get("price")),
         discount: Number(formData.get("discount") || 0),
         couponCode: formData.get("couponCode"),
         stock: Number(formData.get("stock")),
         tags,
+        sizes,
         isFeatured: formData.get("isFeatured") === "on",
         isActive: formData.get("isActive") !== null,
         thumbnail: thumbnailUrl,
@@ -117,7 +125,7 @@ export default function EditProductPage() {
   return (
     <div className="max-w-4xl mx-auto ">
       <button
-        onClick={() => router.push("/admin/products")}
+        onClick={() => router.push("/dashboard/admin/products")}
         className="inline-flex items-center gap-2 text-sm text-gray-700 hover:text-black hover:underline mb-4"
       >
         <ArrowLeft size={16} />
@@ -134,7 +142,6 @@ export default function EditProductPage() {
             "title",
             "brand",
             "model",
-            "category",
             "price",
             "discount",
             "couponCode",
@@ -156,13 +163,51 @@ export default function EditProductPage() {
               />
             </div>
           ))}
+
+          <div>
+            <label className="block mb-1 text-sm font-medium">Category</label>
+            <select
+              name="category"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full border px-3 py-2 rounded"
+            >
+              <option value="">Select Category</option>
+              <option value="wallet">Wallet</option>
+              <option value="belt">Belt</option>
+              <option value="shoe">Shoe</option>
+            </select>
+          </div>
+
+          {["belt", "shoe"].includes(category) && (
+            <div>
+              <label className="block mb-1 text-sm font-medium">
+                Sizes (comma-separated)
+              </label>
+              <input
+                value={sizes.join(",")}
+                onChange={(e) =>
+                  setSizes(
+                    e.target.value
+                      .split(",")
+                      .map((s) => s.trim())
+                      .filter(Boolean)
+                  )
+                }
+                placeholder="e.g. 40, 41, 42"
+                className="w-full border px-3 py-2 rounded"
+              />
+            </div>
+          )}
         </div>
 
+        {/* Description */}
         <div>
           <label className="block mb-1 text-sm font-medium">Description</label>
           <RichTextEditor content={description} onChange={setDescription} />
         </div>
 
+        {/* Tags */}
         <div>
           <label className="block mb-1 text-sm font-medium">
             Tags (comma-separated)

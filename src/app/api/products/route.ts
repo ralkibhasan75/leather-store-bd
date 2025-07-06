@@ -8,7 +8,7 @@ export async function GET() {
 
   const products = await Product.find({ isActive: true, isFeatured: true })
     .sort({ createdAt: -1 })
-    .limit(12); // Optional limit
+    .limit(10); // Optional limit
 
   return NextResponse.json({ products });
 }

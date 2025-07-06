@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { UploadCloud, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { uploadToCloudinary } from "@/lib/utils/uploadToCloudinary";
 import RichTextEditor from "@/components/RichTextEditor";
+import { useRouter } from "next/navigation";
 
 export default function ProductCreateForm() {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
@@ -16,7 +17,9 @@ export default function ProductCreateForm() {
   const [tags, setTags] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [description, setDescription] = useState<string>("");
-
+  const [category, setCategory] = useState("");
+  const [sizes, setSizes] = useState<string[]>([]);
+  const router = useRouter();
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files).filter((f) =>
@@ -66,7 +69,8 @@ export default function ProductCreateForm() {
       formData.append("description", description);
       galleryUrls.forEach((url) => formData.append("galleryUrls", url));
       formData.append("tags", JSON.stringify(tags));
-
+      formData.append("sizes", JSON.stringify(sizes));
+      formData.append("category", category);
       const res = await fetch("/api/admin/products/create", {
         method: "POST",
         body: formData,
@@ -74,26 +78,24 @@ export default function ProductCreateForm() {
 
       toast.dismiss();
 
+      const data = await res.json();
+
       if (res.ok) {
-        toast.success("✅ Product created successfully");
-        e.target.reset();
-        setTags([]);
-        setThumbnail(null);
-        setGallery([]);
-        setGalleryPreviews([]);
-        setThumbPreview(null);
-        setProgressMap({});
+        toast.success("Product created successfully");
+        router.push("/dashboard/admin/products");
       } else {
-        toast.error("❌ Failed to create product");
+        toast.error(data?.error || "Failed to create product");
       }
     } catch (err: any) {
       toast.dismiss();
-      console.error("❌ Upload Error:", err);
       toast.error("Upload failed: " + (err?.message || "Unknown error"));
     } finally {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    if (!["belt", "shoe"].includes(category)) setSizes([]);
+  }, [category]);
 
   return (
     <form
@@ -121,8 +123,40 @@ export default function ProductCreateForm() {
         </div>
         <div>
           <label className="block mb-1 text-sm font-medium">Category</label>
-          <input name="category" className="w-full border px-3 py-2 rounded" />
+          <select
+            name="category"
+            required
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+            className="w-full border px-3 py-2 rounded"
+          >
+            <option value="">Select Category</option>
+            <option value="wallet">Wallet</option>
+            <option value="belt">Belt</option>
+            <option value="shoe">Shoe</option>
+          </select>
         </div>
+
+        {["belt", "shoe"].includes(category) && (
+          <div>
+            <label className="block mb-1 text-sm font-medium">
+              Sizes (comma-separated)
+            </label>
+            <input
+              onChange={(e) =>
+                setSizes(
+                  e.target.value
+                    .split(",")
+                    .map((s) => s.trim())
+                    .filter(Boolean)
+                )
+              }
+              placeholder="e.g. 40, 41, 42"
+              className="w-full border px-3 py-2 rounded"
+            />
+          </div>
+        )}
+
         <div>
           <label className="block mb-1 text-sm font-medium">Price</label>
           <input

@@ -89,6 +89,7 @@ export default function CheckoutClient() {
                 directProduct.discount
               ),
               quantity,
+              selectedSize: searchParams.get("size") || null,
             },
           ]
         : cart.map((item) => ({
@@ -97,7 +98,9 @@ export default function CheckoutClient() {
             model: item.model,
             price: getDiscountedPrice(item.price, item.discount),
             quantity: item.quantity,
+            selectedSize: item.selectedSize || null,
           })),
+
       total: subtotal,
     };
 
@@ -144,6 +147,16 @@ export default function CheckoutClient() {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium">{directProduct.title}</p>
+
+              {searchParams.get("size") && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Size:{" "}
+                  <span className="inline-block bg-gray-100 px-2 rounded-full">
+                    {searchParams.get("size")}
+                  </span>
+                </p>
+              )}
+
               <p className="text-sm text-gray-500">
                 {quantity} × ৳{" "}
                 {getDiscountedPrice(
@@ -152,6 +165,7 @@ export default function CheckoutClient() {
                 ).toFixed(2)}
               </p>
             </div>
+
             <p className="text-sm font-semibold">
               ৳{" "}
               {(
@@ -178,6 +192,15 @@ export default function CheckoutClient() {
               </div>
               <div className="flex-1">
                 <p className="text-sm font-medium">{item.title}</p>
+                {item.selectedSize && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    Size:{" "}
+                    <span className="inline-block bg-gray-100 px-2 rounded-full">
+                      {item.selectedSize}
+                    </span>
+                  </p>
+                )}
+
                 <p className="text-sm text-gray-500">
                   {item.quantity} × ৳{" "}
                   {getDiscountedPrice(item.price, item.discount).toFixed(2)}

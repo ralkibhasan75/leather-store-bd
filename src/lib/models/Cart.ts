@@ -1,3 +1,4 @@
+// src/lib/models/Cart.ts
 import mongoose from "mongoose";
 
 const CartItemSchema = new mongoose.Schema(
@@ -8,6 +9,7 @@ const CartItemSchema = new mongoose.Schema(
       required: true,
     },
     quantity: { type: Number, required: true },
+    selectedSize: { type: String }, // ✅ new field
   },
   { _id: false }
 );
