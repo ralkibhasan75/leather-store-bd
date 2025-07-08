@@ -9,7 +9,7 @@ type CartItem = Product & {
   selectedSize?: string; // ✅ added
 };
 
-type CartContextType = {
+type CartContextType = { 
   cart: CartItem[];
   addToCart: (product: Product & { selectedSize?: string }) => void;
   updateQuantity: (
@@ -19,7 +19,7 @@ type CartContextType = {
   ) => void;
   removeFromCart: (productId: string, selectedSize?: string) => void;
   clearCart: () => void;
-};
+};   
 
 const CartContext = createContext<CartContextType | null>(null);
 
