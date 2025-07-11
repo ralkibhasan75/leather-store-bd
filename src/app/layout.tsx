@@ -67,6 +67,18 @@ export default function RootLayout({
             }),
           }}
         />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-08Q7EQD2DT"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-08Q7EQD2DT');
+  `}
+        </Script>
       </head>
       <body className="bg-[var(--color-bg)] text-[var(--color-brand)] font-serif antialiased">
         <AuthProvider>
