@@ -7,3 +7,4 @@ Host: https://leatherstorebd.com
 
 # Sitemaps
 Sitemap: https://leatherstorebd.com/sitemap.xml
+Sitemap: https://leatherstorebd.com/sitemap-products.xml
