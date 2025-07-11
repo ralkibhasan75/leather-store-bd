@@ -51,7 +51,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       return;
     }
 
-    const url = `/checkout?productId=${product.slug}&quantity=1${
+    const url = `/checkout?slug=${product.slug}&quantity=1${
       hasSizes ? `&size=${selectedSize}` : ""
     }`;
     window.location.href = url;

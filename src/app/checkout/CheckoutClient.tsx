@@ -28,11 +28,12 @@ export default function CheckoutClient() {
 
   useEffect(() => {
     const slug = searchParams.get("slug");
+
     if (slug) {
       fetch(`/api/products/${slug}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data?.product) setDirectProduct(data.product); // note: use `data.product`
+          if (data?.product?._id) setDirectProduct(data.product);
         })
         .catch(() => toast.error("Failed to load product"));
     }
