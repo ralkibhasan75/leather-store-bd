@@ -29,6 +29,7 @@
     "lucide-react": "^0.517.0",
     "mongoose": "^8.16.0",
     "next": "15.3.4",
+    "next-sitemap": "^4.2.3",
     "nodemailer": "^7.0.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -36,6 +37,8 @@
     "react-icons": "^5.5.0",
     "react-image-magnify": "^2.7.4",
     "resend": "^4.6.0",
+    "shortid": "^2.2.17",
+    "slugify": "^1.6.6",
     "swiper": "^11.2.8",
     "tailwind-merge": "^3.3.1",
     "tailwind-variants": "^1.0.0"

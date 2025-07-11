@@ -7,11 +7,59 @@ import {
   PhoneCall,
   Mail,
 } from "lucide-react";
+import type { Metadata } from "next";
+import Script from "next/script";
+<Script
+  type="application/ld+json"
+  id="privacy-structured-data"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      name: "Privacy Policy",
+      description: "Privacy practices and policies of Leather Store BD",
+      url: "https://leatherstorebd.com/privacy",
+      publisher: {
+        "@type": "Organization",
+        name: "Leather Store BD",
+        url: "https://leatherstorebd.com",
+        logo: {
+          "@type": "ImageObject",
+          url: "https://leatherstorebd.com/logo.png",
+        },
+      },
+    }),
+  }}
+/>;
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Privacy Policy – Leather Store BD",
   description:
-    "We value your privacy. Learn how Leather Store BD collects, uses, and protects your personal data.",
+    "We value your privacy. Learn how Leather Store BD collects, uses, and protects your personal data with strict security and confidentiality.",
+  keywords: [
+    "Leather Store BD privacy",
+    "data protection policy",
+    "customer data usage",
+    "Bangladesh ecommerce privacy",
+    "leather store data safety",
+  ],
+  openGraph: {
+    title: "Privacy Policy – Leather Store BD",
+    description:
+      "Leather Store BD explains how your personal information is handled with transparency and security.",
+    url: "https://leatherstorebd.com/privacy",
+    siteName: "Leather Store BD",
+    locale: "en_BD",
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: "Privacy Policy – Leather Store BD",
+    description: "We prioritize your privacy and secure your data responsibly.",
+  },
+  alternates: {
+    canonical: "https://leatherstorebd.com/privacy",
+  },
 };
 
 export default function PrivacyPolicyPage() {

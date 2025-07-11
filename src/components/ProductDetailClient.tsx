@@ -8,6 +8,7 @@ import { Product } from "@/types";
 import toast from "react-hot-toast";
 
 export default function ProductDetailClient({ product }: { product: Product }) {
+  console.log("object", product);
   const [selectedImage, setSelectedImage] = useState(
     product.images[0] || product.thumbnail
   );
@@ -50,7 +51,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
       return;
     }
 
-    const url = `/checkout?productId=${product._id}&quantity=1${
+    const url = `/checkout?productId=${product.slug}&quantity=1${
       hasSizes ? `&size=${selectedSize}` : ""
     }`;
     window.location.href = url;
@@ -193,7 +194,7 @@ export default function ProductDetailClient({ product }: { product: Product }) {
         {related.map((item) => (
           <Link
             key={item._id}
-            href={`/products/${item._id}`}
+            href={`/products/${item.slug}`}
             className="block group border border-gray-200 hover:border-amber-800 rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 bg-white"
           >
             <div className="relative w-full aspect-square bg-gray-100">

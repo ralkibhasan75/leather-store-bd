@@ -8,12 +8,13 @@ type Product = {
   price: number;
   thumbnail: string;
   discount: number;
+  slug: string;
 };
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
     <Link
-      href={`/products/${product._id}`}
+      href={`/products/${product.slug}`}
       className="group block border border-gray-200 rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition bg-white"
     >
       <div className="relative w-full h-64">

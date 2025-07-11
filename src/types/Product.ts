@@ -16,5 +16,6 @@ export type ProductType = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  sizes?: string[]; // ✅ make it optional here
+  slug: string;
+  sizes?: string[];
 };

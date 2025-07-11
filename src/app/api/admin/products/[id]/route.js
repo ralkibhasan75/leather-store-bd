@@ -41,7 +41,6 @@ export async function DELETE(_, context) {
     );
   }
 }
-
 // PATCH product
 export async function PATCH(req, context) {
   await connectDB();
@@ -50,7 +49,6 @@ export async function PATCH(req, context) {
   try {
     const body = await req.json();
 
-    // Extract fields
     const {
       title,
       brand,
@@ -69,7 +67,6 @@ export async function PATCH(req, context) {
       sizes,
     } = body;
 
-    // Validate sizes if category is belt or shoe
     if (["belt", "shoe"].includes(category)) {
       if (!Array.isArray(sizes) || sizes.length === 0) {
         return NextResponse.json(
@@ -90,31 +87,30 @@ export async function PATCH(req, context) {
       }
     }
 
-    const updated = {
-      title,
-      brand,
-      model,
-      category,
-      price: parseFloat(price),
-      discount: parseFloat(discount || 0),
-      couponCode: couponCode || "",
-      stock: parseInt(stock),
-      description,
-      isActive,
-      isFeatured,
-      thumbnail,
-      images: images || [],
-      tags: tags || [],
-      sizes: sizes || [],
-    };
-
-    const product = await Product.findByIdAndUpdate(params.id, updated, {
-      new: true,
-    });
-
+    const product = await Product.findById(params.id);
     if (!product) {
       return NextResponse.json({ error: "Product not found" }, { status: 404 });
     }
+
+    // Update fields
+    product.title = title;
+    product.brand = brand;
+    product.model = model;
+    product.category = category;
+    product.price = parseFloat(price);
+    product.discount = parseFloat(discount || 0);
+    product.couponCode = couponCode || "";
+    product.stock = parseInt(stock);
+    product.description = description;
+    product.isActive = isActive;
+    product.isFeatured = isFeatured;
+    product.thumbnail = thumbnail;
+    product.images = images || [];
+    product.tags = tags || [];
+    product.sizes = sizes || [];
+
+    // Save so slug pre-save hook works
+    await product.save();
 
     return NextResponse.json({ success: true, product });
   } catch (error) {
@@ -125,4 +121,3 @@ export async function PATCH(req, context) {
     );
   }
 }
-

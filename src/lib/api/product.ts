@@ -21,13 +21,31 @@ export async function fetchProductById(
   }
 }
 
+export async function fetchProductBySlug(
+  slug: string
+): Promise<ProductType | null> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/${slug}`,
+      { cache: "no-store" }
+    );
+
+    if (!res.ok) return null;
+
+    const data = await res.json();
+    return data.product as ProductType; // ✅ Correct
+  } catch (err) {
+    console.error("Failed to fetch product by slug:", err);
+    return null;
+  }
+}
+
 export async function fetchAllProducts(): Promise<ProductType[]> {
   try {
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_BASE_URL}/api/products/all`,
       {
-        // ✅ Use revalidate instead of no-store
-        next: { revalidate: 60 }, // Revalidate every 60 seconds
+        next: { revalidate: 60 },
       }
     );
 

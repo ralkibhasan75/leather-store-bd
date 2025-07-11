@@ -27,12 +27,12 @@ export default function CheckoutClient() {
   const quantity = parseInt(searchParams.get("quantity") || "1");
 
   useEffect(() => {
-    const productId = searchParams.get("productId");
-    if (productId) {
-      fetch(`/api/products/${productId}`)
+    const slug = searchParams.get("slug");
+    if (slug) {
+      fetch(`/api/products/${slug}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data?._id) setDirectProduct(data);
+          if (data?.product) setDirectProduct(data.product); // note: use `data.product`
         })
         .catch(() => toast.error("Failed to load product"));
     }

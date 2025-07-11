@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // ✅ Validate each size is a number
       const invalidSizes = sizes.filter(
         (s: any) => isNaN(Number(s)) || Number(s) <= 0
       );
@@ -55,8 +54,8 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-    console.log(req.formData, 'formData');
 
+    // ✅ Product create (slug will be auto-generated in schema)
     const product = await Product.create({
       title,
       description,
@@ -68,7 +67,7 @@ export async function POST(req: NextRequest) {
       discount,
       couponCode,
       tags,
-      sizes, // ✅ insert sizes to DB
+      sizes,
       thumbnail: thumbnailUrl,
       images: galleryUrls,
       isFeatured,
@@ -76,7 +75,6 @@ export async function POST(req: NextRequest) {
     });
 
     return NextResponse.json({ success: true, product });
-    
   } catch (error: any) {
     return NextResponse.json(
       { success: false, error: error.message },
