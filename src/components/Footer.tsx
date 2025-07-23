@@ -6,8 +6,21 @@ import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#121212] text-white pt-20 pb-10 px-6 mt-32 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+    <footer className="bg-[#121212] text-white pt-16 pb-10 px-4 sm:px-6 mt-32 border-t border-gray-800">
+      {/* Owner */}
+      <div className="text-center text-sm text-gray-400 mb-8">
+        Owned & managed by{" "}
+        <a
+          href="https://www.facebook.com/mdrakibhasan7580"
+          target="_blank"
+          className="text-white font-medium underline"
+        >
+          Md. Rakib Hasan
+        </a>
+      </div>
+
+      {/* Main Grid */}
+      <div className="max-w-7xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-10">
         {/* Logo + About */}
         <div>
           <h3 className="text-2xl font-serif font-bold mb-4 tracking-tight text-white">
@@ -115,8 +128,8 @@ export default function Footer() {
       </div>
 
       {/* Bottom Line */}
-      <div className="mt-16 border-t border-gray-800 pt-6 px-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="mt-16 border-t border-gray-800 pt-6">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 px-4">
           {/* Copyright */}
           <p className="text-sm text-gray-500 text-center md:text-left">
             &copy; {new Date().getFullYear()} Leather Store. All rights
@@ -139,7 +152,7 @@ export default function Footer() {
         </div>
 
         {/* Payment Icons */}
-        <div className="mt-6 flex justify-center gap-6 items-center flex-wrap">
+        <div className="mt-6 flex justify-center gap-6 items-center flex-wrap px-4">
           <img
             src="/icons/bkash.svg"
             alt="Bkash"

@@ -6,19 +6,30 @@ import {
   SheetHeader,
   SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { useCart } from "@/context/CartContext";
-import { Trash2, ShoppingCart } from "lucide-react";
+import { Trash2, ShoppingCart, X } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function CartDrawer() {
   const { cart, removeFromCart, updateQuantity } = useCart();
+  const [isMobile, setIsMobile] = useState(false);
 
-  const getDiscountedPrice = (price: number, discount: number) => {
-    return discount > 0 ? price - (price * discount) / 100 : price;
-  };
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const getDiscountedPrice = (price: number, discount: number) =>
+    discount > 0 ? price - (price * discount) / 100 : price;
 
   const subtotal = cart.reduce(
     (acc, item) =>
@@ -39,14 +50,23 @@ export default function CartDrawer() {
         </button>
       </SheetTrigger>
 
-      <SheetContent className="w-full sm:w-[420px] px-5">
-        <SheetHeader>
+      <SheetContent className="w-[90%] sm:w-[420px] max-w-sm px-5 rounded-l-xl shadow-xl border-l bg-white flex flex-col pt-6">
+        {/* Header */}
+        <SheetHeader className="relative mb-4">
           <SheetTitle className="text-lg font-semibold tracking-wide text-center text-[var(--color-brand)]">
             Your Cart
           </SheetTitle>
+          {isMobile && (
+            <SheetClose asChild>
+              <button className="absolute left-0 top-0 p-3">
+                <X className="h-5 w-5 text-gray-600" />
+              </button>
+            </SheetClose>
+          )}
         </SheetHeader>
 
-        <div className="mt-6 flex flex-col gap-4 h-[calc(100vh-200px)] overflow-y-auto pr-1">
+        {/* Cart Items */}
+        <div className="flex-1 overflow-y-auto pr-1 space-y-5">
           {cart.length === 0 ? (
             <div className="text-center text-sm text-gray-500 mt-10">
               <p>Your cart is empty.</p>
@@ -65,8 +85,8 @@ export default function CartDrawer() {
               );
               return (
                 <div
-                  key={item._id + item.selectedSize} // ensure uniqueness per size variant
-                  className="flex gap-4 border-b border-gray-200 pb-4"
+                  key={item._id + item.selectedSize}
+                  className="flex gap-4 border-b pb-4"
                 >
                   <div className="relative w-20 h-20 shrink-0">
                     <Image
@@ -77,16 +97,15 @@ export default function CartDrawer() {
                     />
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-medium">{item.title}</h4>
+                    <h4 className="text-sm font-medium line-clamp-2">
+                      {item.title}
+                    </h4>
                     {item.selectedSize && (
-                      <div className="mt-1">
-                        <span className="inline-block text-xs text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-300 font-medium">
-                          Size: {item.selectedSize}
-                        </span>
-                      </div>
+                      <span className="mt-1 inline-block text-xs text-gray-700 bg-gray-100 px-2 py-0.5 rounded-full border border-gray-300 font-medium">
+                        Size: {item.selectedSize}
+                      </span>
                     )}
-
-                    <p className="text-sm text-gray-500 mt-0.5">
+                    <p className="text-sm text-gray-500 mt-1">
                       ৳ {discountedPrice.toFixed(2)} × {item.quantity}
                     </p>
                     <div className="flex gap-2 items-center mt-2">
@@ -139,10 +158,17 @@ export default function CartDrawer() {
           )}
         </div>
 
-        {/* Footer */}
+        {/* Sticky Footer */}
         {cart.length > 0 && (
-          <div className="mt-6 border-t pt-4 space-y-3">
-            <p className="text-sm font-medium text-gray-800 flex justify-between">
+          <div
+            className={`${
+              isMobile
+                ? "fixed bottom-0 right-0 w-[90%] max-w-sm px-5  pt-4 pb-6 shadow-lg border-t z-50 rounded-lb-xl"
+                : "mt-6 border-t pt-4"
+            }
+`}
+          >
+            <p className="text-sm font-medium text-gray-800 flex justify-between mb-3">
               Subtotal:
               <span className="font-bold text-[var(--color-brand)]">
                 ৳ {subtotal.toFixed(2)}
