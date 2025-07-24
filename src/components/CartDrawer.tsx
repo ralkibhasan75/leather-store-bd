@@ -18,6 +18,7 @@ import { useEffect, useState } from "react";
 export default function CartDrawer() {
   const { cart, removeFromCart, updateQuantity } = useCart();
   const [isMobile, setIsMobile] = useState(false);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -38,9 +39,12 @@ export default function CartDrawer() {
   );
 
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <button className="relative hover:scale-105 transition-transform duration-200">
+        <button
+          onClick={() => setOpen(true)} // ✅ explicitly open
+          className="relative hover:scale-105 transition-transform duration-200"
+        >
           <ShoppingCart className="w-6 h-6 text-[var(--color-brand)]" />
           {cart.length > 0 && (
             <span className="absolute -top-2 -right-2 text-xs bg-red-600 text-white w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
@@ -70,12 +74,15 @@ export default function CartDrawer() {
           {cart.length === 0 ? (
             <div className="text-center text-sm text-gray-500 mt-10">
               <p>Your cart is empty.</p>
-              <Link
-                href="/products"
-                className="text-[var(--color-brand)] underline mt-2 inline-block"
+              <button
+                onClick={() => {
+                  setOpen(false);
+                  window.location.href = "/products";
+                }}
+                className="text-[var(--color-brand)] underline mt-2 inline-block cursor-pointer"
               >
                 Browse Products
-              </Link>
+              </button>
             </div>
           ) : (
             cart.map((item) => {
@@ -163,8 +170,8 @@ export default function CartDrawer() {
           <div
             className={`${
               isMobile
-                ? "fixed bottom-0 right-0 w-[90%] max-w-sm px-5  pt-4 pb-6 shadow-lg border-t z-50 rounded-lb-xl"
-                : "mt-6 border-t pt-4"
+                ? "fixed bottom-0 right-0 w-[90%] max-w-sm px-5  py-4 shadow-lg border-t z-50 rounded-lb-xl"
+                : "mt-6 border-t py-4"
             }
 `}
           >
@@ -177,6 +184,7 @@ export default function CartDrawer() {
             <div className="flex gap-2">
               <Button
                 variant="outline"
+                onClick={() => setOpen(false)}
                 className="w-1/2 hover:bg-gray-100 transition"
               >
                 <Link href="/cart">
@@ -186,8 +194,11 @@ export default function CartDrawer() {
                   </span>
                 </Link>
               </Button>
-              <Link href="/checkout" className="w-1/2">
-                <Button className="w-full hover:bg-[#2a1f1f] text-white transition">
+              <Link href="/checkout" className="w-1/2 ">
+                <Button
+                  onClick={() => setOpen(false)}
+                  className="w-full hover:bg-[#2a1f1f] text-white transition cursor-pointer"
+                >
                   Checkout
                 </Button>
               </Link>
