@@ -54,26 +54,28 @@ export default function ProductCard({ product }: { product: Product }) {
 
       {/* Content Section */}
       <div className="flex flex-col justify-between flex-grow px-4 py-3">
-        <div>
-          <h3 className="text-base sm:text-lg font-semibold font-serif text-gray-800 hover:text-amber-900 line-clamp-2 mb-2">
-            {product.title}
-          </h3>
+        <Link href={`/products/${product.slug}`}>
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold font-serif text-gray-800 hover:text-amber-900 line-clamp-2 mb-2">
+              {product.title}
+            </h3>
 
-          {product.discount > 0 ? (
-            <div className="flex items-center gap-2 mb-1">
-              <div className="text-lg font-bold text-red-600">
-                Tk. {discountedPrice}
+            {product.discount > 0 ? (
+              <div className="flex items-center gap-2 mb-1">
+                <div className="text-lg font-bold text-red-600">
+                  Tk. {discountedPrice}
+                </div>
+                <div className="text-sm text-gray-500 line-through">
+                  Tk. {product.price.toFixed(2)}
+                </div>
               </div>
-              <div className="text-sm text-gray-500 line-through">
+            ) : (
+              <div className="text-lg font-semibold text-gray-900 mb-1">
                 Tk. {product.price.toFixed(2)}
               </div>
-            </div>
-          ) : (
-            <div className="text-lg font-semibold text-gray-900 mb-1">
-              Tk. {product.price.toFixed(2)}
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        </Link>
 
         {/* Button */}
         <button
