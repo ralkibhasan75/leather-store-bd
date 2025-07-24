@@ -276,7 +276,7 @@ export default function CheckoutClient() {
           {["bKash", "Nagad", "Rocket"].includes(form.paymentMethod) && (
             <>
               <div className="text-sm text-gray-700">
-                Send payment to:{" "}
+                Send money to:{" "}
                 <span className="font-bold text-[var(--color-brand)]">
                   {
                     paymentNumbers[
