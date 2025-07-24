@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import ProductCard from "@/components/ProductCard";
@@ -30,12 +29,12 @@ export default function HomePage() {
   return (
     <main className="min-h-screen w-full">
       {/* Hero Section */}
-      <section className="bg-[#f6f4f1] py-24 text-center px-6">
+      <section className="bg-[#f6f4f1] py-8 md:py-14 text-center px-4 sm:px-6">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-5xl md:text-6xl font-bold font-serif mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-5xl md:text-6xl font-bold font-serif mb-6 leading-tight">
             Timeless Luxury in Every Stitch
           </h1>
-          <p className="text-gray-600 text-lg md:text-xl mb-8">
+          <p className="text-gray-600 text-base sm:text-lg md:text-xl mb-8">
             Explore handcrafted leather pieces that redefine elegance and
             durability.
           </p>
@@ -46,7 +45,7 @@ export default function HomePage() {
       </section>
 
       {/* Features */}
-      <section className="py-16 px-6 bg-white">
+      <section className="py-16 px-4 sm:px-6 bg-white">
         <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-center gap-8 text-center">
           {[
             {
@@ -54,7 +53,6 @@ export default function HomePage() {
               title: "Premium Leather",
               desc: "Only the finest quality materials",
             },
-            
             {
               icon: "🚚",
               title: "Fast Delivery",
@@ -63,7 +61,7 @@ export default function HomePage() {
           ].map((item, i) => (
             <div
               key={i}
-              className="p-6 border rounded shadow-sm hover:shadow-md transition"
+              className="p-6 w-full sm:w-64 border rounded shadow-sm hover:shadow-md transition"
             >
               <div className="text-4xl mb-4">{item.icon}</div>
               <h3 className="font-semibold text-lg">{item.title}</h3>
@@ -74,12 +72,12 @@ export default function HomePage() {
       </section>
 
       {/* Featured Products */}
-      <section className="py-20 px-6 bg-[#fafafa]">
+      <section className="py-20 px-4 sm:px-6 bg-[#fafafa]">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl font-serif font-semibold mb-10 text-center">
             Featured Products
           </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {loading
               ? Array.from({ length: 4 }).map((_, i) => (
                   <SkeletonCard key={i} />
@@ -101,13 +99,12 @@ export default function HomePage() {
         </div>
       </section>
 
-
       {/* Call to Action */}
-      <section className="py-20 bg-[var(--color-brand)] text-white text-center px-6">
-        <h2 className="text-4xl font-serif font-bold mb-4">
+      <section className="py-20 bg-[var(--color-brand)] text-white text-center px-4 sm:px-6">
+        <h2 className="text-3xl sm:text-4xl font-serif font-bold mb-4">
           Ready to Elevate Your Style?
         </h2>
-        <p className="text-lg mb-6">
+        <p className="text-base sm:text-lg mb-6">
           Shop our full collection and find your perfect piece today.
         </p>
         <Button className="bg-white text-[var(--color-brand)] px-8 py-3 text-lg hover:bg-gray-100">
