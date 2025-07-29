@@ -6,7 +6,7 @@ import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#121212] text-white pt-16 pb-10 px-4 sm:px-6 mt-32 border-t border-gray-800">
+    <footer className="bg-[#121212] text-white pt-16 pb-10 px-4 sm:px-6 border-t border-gray-800">
       {/* Owner */}
       <div className="text-center text-sm text-gray-400 mb-8">
         Owned & managed by{" "}
