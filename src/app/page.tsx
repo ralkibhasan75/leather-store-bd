@@ -46,7 +46,7 @@ export default function HomePage() {
 
       {/* Features */}
       <section className="py-12 px-4 sm:px-6 bg-white">
-        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 text-center place-items-center">
           {[
             {
               icon: "👜",
