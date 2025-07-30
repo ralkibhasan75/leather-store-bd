@@ -85,11 +85,11 @@ export default function RootLayout({
           <CartProvider>
             <Navbar />
             <main className="pt-20">{children}</main>
+            <Analytics />
             <Footer />
             <Toaster position="top-center" reverseOrder={false} />
           </CartProvider>
         </AuthProvider>
-        <Analytics />
       </body>
     </html>
   );
