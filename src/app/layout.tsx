@@ -7,7 +7,7 @@ import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/context/AuthContext";
 import Footer from "@/components/Footer";
 import Script from "next/script";
-
+import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   title: {
     default: "Leather Store BD",
@@ -89,6 +89,7 @@ export default function RootLayout({
             <Toaster position="top-center" reverseOrder={false} />
           </CartProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
