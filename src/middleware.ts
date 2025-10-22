@@ -1,8 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// ADMIN PROTECTION
+// ====== SITE SUSPENSION FLAG ======
+const SITE_UNPAID = true; // 🔴 toggle this flag to enable or disable suspension
+const EXCLUDED_PATHS = ["/unpaid", "/api", "/_next", "/favicon.ico", "/admin"]; // allow system routes
 
+// ====== ADMIN PROTECTION ======
 function decodeJWT(token: string): { role?: string } | null {
   try {
     const base64Payload = token.split(".")[1];
@@ -16,8 +19,13 @@ function decodeJWT(token: string): { role?: string } | null {
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  console.log("⛔ BLOCK CHECK PATH:", pathname);
 
+  // 🔴 1. SITE PAYMENT CHECK
+  if (SITE_UNPAID && !EXCLUDED_PATHS.some((p) => pathname.startsWith(p))) {
+    return NextResponse.redirect(new URL("/unpaid", request.url));
+  }
+
+  // 🧩 2. ADMIN AREA PROTECTION
   const protectedAdminPaths = ["/dashboard/admin", "/api/admin"];
   const isAdminPath = protectedAdminPaths.some((path) =>
     pathname.startsWith(path)
@@ -42,5 +50,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/((?!_next|favicon.ico).*)"], // match all except system internals
 };
